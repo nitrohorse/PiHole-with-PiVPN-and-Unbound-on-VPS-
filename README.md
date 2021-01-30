@@ -1,11 +1,10 @@
-# Pi-hole with PiVPN (WireGuard) on AWS
+# [Pi-hole](https://pi-hole.net/) with [PiVPN (WireGuard)](https://pivpn.io/) on [AWS](https://aws.amazon.com/free)
 
 # Table of Contents
-* [Create a VPS](#create-a-VPS)
+* [Create a VPS](#Create-a-VPS)
 * [Install Pi-hole](#Install-Pi-hole)
-* [Install and setup VPN](#Install-and-setup-your-VPN)
-* [Install Unbound](#Install-Unbound)
-* [Notes and Troubleshooting](#Notes)
+* [Install and Setup PiVPN](#Install-and-Setup-PiVPN)
+* [Troubleshooting](#Troubleshooting)
 
 # Create a VPS
 ## Step 1: Create a free Ubuntu server in AWS
@@ -61,4 +60,3 @@
 * Before being able to remotely log in, I had to run the command `chmod 600 ~/.ssh/PiVPNHOLE.pem`.
 * After clicking "generate keys" in PiVPN, you may get `/tmp/setupVars.conf permission denied`. I solved this by deleting that file.
 * You may need to run the PiVPN script as sudo. Run with `curl -L https://install.pivpn.io | sudo bash`.
-
