@@ -22,11 +22,41 @@
 
 **Note:** If you are planning to use this as a VPN (no split-tunneling), use LightSail. AWS has a £0.12 / gb cost on outbound transfers. This means that if you use 1tb / month, you'll spend £120. If you use Lightsail, the £3.50 tier gets you 1tb / month which saves you £116.50.
 
+## Optional
+
+One way to avoid filling up your Pi-hole logs with queries to your VPS' ["Private DNS"](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html), e.g. `[hostname].[region].compute.internal`, is to disable `systemd-resolved`.
+
+Disable `systemd-resolved`.
+```
+sudo systemctl disable systemd-resolved
+sudo systemctl stop systemd-resolved
+```
+
+Delete the symlink `/etc/resolv.conf`.
+```
+sudo rm /etc/resolv.conf
+```
+
+Recreate `/etc/resolv.conf`.
+```
+sudo vim /etc/resolv.conf
+```
+
+Add a nameserver which the VPS will use for resolving network requests (such as updating the Pi-hole blocklists or packages).
+```
+nameserver 9.9.9.9 # Quad9
+```
+
+Add the hostname (found in `/etc/hostname`) to `/etc/hosts` (e.g. `sudo vim /etc/hosts`):
+```
+127.0.0.1 localhost [hostname]
+```
+
 # Install Pi-hole
 
 ## Step 2: Connect to VPS
 
-`ssh -i /Users/[your user]/.ssh/PiVPNHOLE.pem ubuntu@[your host]` 
+`ssh -i /Users/[your user]/.ssh/PiVPNHOLE.pem ubuntu@[your host]`
 
 ## Step 3: Install Pi-hole
 
@@ -55,6 +85,13 @@
 ## Step 8: Transfer Profiles from VPS to Local
 
 `scp -i ~/.ssh/PiVPNHOLE.pem ubuntu@[your host]:/etc/wireguard/configs/[profile-name.conf] ~/etc/wireguard/`
+
+## Optional: Setup Encrypted DNS
+
+Setup encrypted DNS with several options:
+- DNS over HTTPS with [Cloudflared](https://docs.pi-hole.net/guides/dns/cloudflared/).
+- DNS over HTTPS or DNSCrypt with [dnscrypt-proxy](https://github.com/DNSCrypt/dnscrypt-proxy/wiki/Installation).
+- Your own recursive resolver or DNS over TLS with [Unbound](https://docs.pi-hole.net/guides/dns/unbound/).
 
 # Troubleshooting
 * Before being able to remotely log in, I had to run the command `chmod 600 ~/.ssh/PiVPNHOLE.pem`.
